@@ -1,0 +1,20 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model FaceitId {
+  uid        String   @id @default(cuid()) @db.VarChar(45)
+  player_id  String?  @unique @db.VarChar(45)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("faceit_id")
+}
