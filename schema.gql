@@ -3,5 +3,10 @@
 # ------------------------------------------------------
 
 type Query {
-  getPlayerId(player_id: String!): String
+  testFile: [String!]
+}
+
+type Mutation {
+  getPlayerID: String
+  getPlayerID2: String
 }

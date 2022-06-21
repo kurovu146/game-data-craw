@@ -10,9 +10,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model FaceitId {
+model FaceitID {
   uid        String   @id @default(cuid()) @db.VarChar(45)
-  player_id  String?  @unique @db.VarChar(45)
+  player_id  String?  @unique 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 

@@ -3,13 +3,21 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
 @Resolver()
 export class PlayerResolver {
-    constructor(private PlayerService: PlayerService) { }
+  constructor(private PlayerService: PlayerService) { }
 
-    @Query(() => String, { nullable: true })
-    async getPlayerId(
-        @Args('player_id') player_id: string,
-      ): Promise<String> {
-        return "ok";//await this.PlayerService.getPlayerId(player_id);
-      }
+  @Mutation(() => String, { nullable: true })
+  async getPlayerID(): Promise<String> {
+    return await this.PlayerService.getPlayerID();
+  }
 
+  @Mutation(() => String, { nullable: true })
+  async getPlayerID2(): Promise<String> {
+    return await this.PlayerService.getPlayerID2();
+  }
+
+
+  @Query(() => [String], { nullable: true })
+  async testFile(): Promise<String[]> {
+    return await this.PlayerService.testFile();
+  }
 }
