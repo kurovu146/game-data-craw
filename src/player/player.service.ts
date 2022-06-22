@@ -143,6 +143,14 @@ export class PlayerService {
     return matches;
   }
 
+  async start() {
+    const data = await this.prismaService.faceitID.findMany({});
+    if (data.length)
+      await this.getPlayerID2();
+    else
+      await this.getPlayerID();
+  }
+
   async testFile() {
     fs.appendFileSync('data.txt', "kk1" + "\n");
     fs.appendFileSync('data.txt', "kk2" + "\n");

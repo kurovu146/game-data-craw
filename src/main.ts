@@ -8,6 +8,7 @@ import { AppModule } from './app.module';
 import { buildCorsOption } from '@lib/helper/cors';
 import { AppErrorsInterceptor } from '@lib/helper/interceptor/errors.interceptor';
 import { Sentry } from '@lib/helper/service/sentry.service';
+import { PlayerService } from './player/player.service';
 
 async function bootstrap() {
   // Currently we use Express platform for work with stable apollo graphql
@@ -55,6 +56,9 @@ async function bootstrap() {
     module.hot.accept();
     module.hot.dispose(() => app.close());
   }
+
+  const start = app.get(PlayerService);
+  start.start();
 }
 // For HMR
 declare const module: any;

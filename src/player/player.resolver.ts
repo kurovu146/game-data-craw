@@ -15,6 +15,11 @@ export class PlayerResolver {
     return await this.PlayerService.getPlayerID2();
   }
 
+  @Mutation(() => Boolean, { nullable: true })
+  async start(): Promise<Boolean> {
+    await this.PlayerService.start();
+    return true;
+  }
 
   @Query(() => [String], { nullable: true })
   async testFile(): Promise<String[]> {
