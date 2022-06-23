@@ -47,11 +47,16 @@ export class PlayerService {
       }
     })
     while (queue.size) {
-      const matches_of_player = await this.getCSGOMatches(
-        queue.value(),
-        0,
-        10,
-      );
+      let matches_of_player: MatchHistory;
+      try {
+        matches_of_player = await this.getCSGOMatches(
+          queue.value(),
+          0,
+          10,
+        );
+      } catch(err) {
+        continue;
+      }
       for (const match of matches_of_player.items) {
         for (const player of match.playing_players) {
           if (!queue.is_existed(player)) {   
@@ -77,11 +82,16 @@ export class PlayerService {
     }
     queue.enqueue(data[data.length - 1].player_id);
     while (queue.size) {
-      const matches_of_player = await this.getCSGOMatches(
-        queue.value(),
-        0,
-        10,
-      );
+      let matches_of_player: MatchHistory;
+      try {
+        matches_of_player = await this.getCSGOMatches(
+          queue.value(),
+          0,
+          10,
+        );
+      } catch(err) {
+        continue;
+      }
       for (const match of matches_of_player.items) {
         for (const player of match.playing_players) {
           if (!queue.is_existed(player)) {
@@ -124,18 +134,22 @@ export class PlayerService {
     }
 
     let matches: MatchHistory;
-    let _matches = await firstValueFrom(
-      this.http.get(
-        `https://open.faceit.com/data/v4/players/${player_uid}/history?game=csgo${from}${to}&offset=${offset}&limit=${limit}`,
-        {
-          headers: {
-            Authorization: 'Bearer ' + process.env.FACEIT_API_KEY,
+    try {
+      let _matches = await firstValueFrom(
+        this.http.get(
+          `https://open.faceit.com/data/v4/players/${player_uid}/history?game=csgo${from}${to}&offset=${offset}&limit=${limit}`,
+          {
+            headers: {
+              Authorization: 'Bearer ' + process.env.FACEIT_API_KEY,
+            },
           },
-        },
-      ),
-    );
-    matches = _matches.data as MatchHistory;
-    // console.log('matches: ' + matches);
+        ),
+      );
+      matches = _matches.data as MatchHistory;
+      // console.log('matches: ' + matches);
+    } catch (err) {
+      throw new AppError('firstValueFrom: Bad request', 'BAD_REQUEST');
+    }
     return matches;
   }
 
