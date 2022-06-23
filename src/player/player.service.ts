@@ -55,6 +55,7 @@ export class PlayerService {
           10,
         );
       } catch(err) {
+        queue.dequeue(queue.value());
         continue;
       }
       for (const match of matches_of_player.items) {
@@ -90,6 +91,7 @@ export class PlayerService {
           10,
         );
       } catch(err) {
+        queue.dequeue(queue.value());
         continue;
       }
       for (const match of matches_of_player.items) {
