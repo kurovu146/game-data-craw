@@ -124,22 +124,18 @@ export class PlayerService {
     }
 
     let matches: MatchHistory;
-    try {
-      let _matches = await firstValueFrom(
-        this.http.get(
-          `https://open.faceit.com/data/v4/players/${player_uid}/history?game=csgo${from}${to}&offset=${offset}&limit=${limit}`,
-          {
-            headers: {
-              Authorization: 'Bearer ' + process.env.FACEIT_API_KEY,
-            },
+    let _matches = await firstValueFrom(
+      this.http.get(
+        `https://open.faceit.com/data/v4/players/${player_uid}/history?game=csgo${from}${to}&offset=${offset}&limit=${limit}`,
+        {
+          headers: {
+            Authorization: 'Bearer ' + process.env.FACEIT_API_KEY,
           },
-        ),
-      );
-      matches = _matches.data as MatchHistory;
-      // console.log('matches: ' + matches);
-    } catch (err) {
-      throw new AppError('Bad request', 'BAD_REQUEST');
-    }
+        },
+      ),
+    );
+    matches = _matches.data as MatchHistory;
+    // console.log('matches: ' + matches);
     return matches;
   }
 
