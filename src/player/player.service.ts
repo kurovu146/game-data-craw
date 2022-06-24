@@ -4,7 +4,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 import { Queue } from 'src/queue/queue';
-import { FaceitData, MatchHistory } from './dto/player.dto';
+import { MatchHistory } from './dto/player.dto';
 import * as fs from 'fs';
 
 @Injectable()
@@ -17,33 +17,11 @@ export class PlayerService {
   ) { }
 
   async getPlayerID() {
-    let response;
-    // get data from faceit
-    try {
-      response = await firstValueFrom(
-        this.http.get(
-          'https://open.faceit.com/data/v4/players/' + process.env.FACEIT_ID,
-          {
-            headers: {
-              Authorization: 'Bearer ' + process.env.FACEIT_API_KEY,
-            },
-          },
-        ),
-      );
-      response = response.data as FaceitData;
-      // console.log("debug_fb: ", response.data)
-    } catch (err) {
-      throw new AppError('Bad request', 'BAD_REQUEST');
-    }
-    // does account faceit have csgo?
-    if (!response.games || !response.games.csgo) {
-      throw new AppError('Faceit account hasnt csgo', 'BAD_REQUEST');
-    }
     const queue = new Queue<string>;
-    queue.enqueue(response.player_id);
+    queue.enqueue(process.env.FACEIT_ID);
     await this.prismaService.faceitID.create({
       data: {
-        player_id: response.player_id,
+        player_id: process.env.FACEIT_ID,
       }
     })
     while (queue.size) {
