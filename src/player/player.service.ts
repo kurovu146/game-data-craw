@@ -5,7 +5,6 @@ import { Injectable, Logger } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 import { Queue } from 'src/queue/queue';
 import { MatchHistory } from './dto/player.dto';
-import * as fs from 'fs';
 
 @Injectable()
 export class PlayerService {

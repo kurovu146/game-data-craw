@@ -24,11 +24,4 @@ export class Queue<T> implements IQueue<T> {
         let value = this.storage.keys();
         return value.next().value;
     }
-    is_existed(item: T): boolean {
-        return this.storagecopy.has(item);
-    }
-    log(item: T): void {
-        this.storagecopy.set(item, item);
-    }
-
 }

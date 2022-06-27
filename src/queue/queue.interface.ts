@@ -3,6 +3,4 @@ export interface IQueue<T> {
     dequeue(item: T): boolean;
     size(): number;
     value(): T | null;
-    is_existed(item: T): boolean;
-    log(item: T): void;
 }
