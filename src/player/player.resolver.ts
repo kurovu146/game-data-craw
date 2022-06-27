@@ -21,8 +21,8 @@ export class PlayerResolver {
     return true;
   }
 
-  @Query(() => [String], { nullable: true })
-  async testFile(): Promise<String[]> {
+  @Query(() => String, { nullable: true })
+  async testFile(): Promise<String> {
     return await this.PlayerService.testFile();
   }
 }

@@ -57,8 +57,8 @@ async function bootstrap() {
     module.hot.dispose(() => app.close());
   }
 
-  const start = app.get(PlayerService);
-  start.start();
+  //const start = app.get(PlayerService);
+  //start.start();
 }
 // For HMR
 declare const module: any;

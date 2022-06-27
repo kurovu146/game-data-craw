@@ -38,14 +38,17 @@ export class PlayerService {
       }
       for (const match of matches_of_player.items) {
         for (const player of match.playing_players) {
-          if (!queue.is_existed(player)) {   
-            queue.enqueue(player);
+          try{
             await this.prismaService.faceitID.create({
               data: {
                 player_id: player,
               }
             })
           }
+          catch(er) {
+            continue;
+          }
+          queue.enqueue(player);
         }
       }
       queue.dequeue(queue.value());
@@ -55,11 +58,12 @@ export class PlayerService {
 
   async getPlayerID2() {
     const queue = new Queue<string>;
-    const data = await this.prismaService.faceitID.findMany({});
-    for (const player of data) {
-      queue.log(player.player_id);
-    }
-    queue.enqueue(data[data.length - 1].player_id);
+    const data = await this.prismaService.faceitID.findFirst({
+      orderBy: {
+        uid: 'desc'
+      }
+    });
+    queue.enqueue(data.player_id);
     while (queue.size) {
       let matches_of_player: MatchHistory;
       try {
@@ -74,14 +78,17 @@ export class PlayerService {
       }
       for (const match of matches_of_player.items) {
         for (const player of match.playing_players) {
-          if (!queue.is_existed(player)) {
-            queue.enqueue(player);
+          try{
             await this.prismaService.faceitID.create({
               data: {
                 player_id: player,
               }
             })
           }
+          catch(er) {
+            continue;
+          }
+          queue.enqueue(player);
         }
       }
       queue.dequeue(queue.value());
@@ -142,12 +149,12 @@ export class PlayerService {
   }
 
   async testFile() {
-    fs.appendFileSync('data.txt', "kk1" + "\n");
-    fs.appendFileSync('data.txt', "kk2" + "\n");
-    fs.appendFileSync('data.txt', "kk3" + "\n");
-    fs.appendFileSync('data.txt', "kk4" + "\n");
-    const data = fs.readFileSync('data.txt', 'utf8');
-    let res = data.split("\n");
+    const data = await this.prismaService.faceitID.findFirst({
+      orderBy: {
+        uid: 'desc'
+      }
+    });
+    let res = data.player_id;
     return res;
   }
 

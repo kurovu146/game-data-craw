@@ -3,7 +3,7 @@
 # ------------------------------------------------------
 
 type Query {
-  testFile: [String!]
+  testFile: String
 }
 
 type Mutation {
