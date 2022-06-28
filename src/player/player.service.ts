@@ -9,6 +9,8 @@ import { MatchHistory } from './dto/player.dto';
 @Injectable()
 export class PlayerService {
   private readonly logger = new Logger(PlayerService.name);
+  private total: number = 0;
+  private duplicate: number = 0;
 
   constructor(
     private prismaService: PrismaService,
@@ -23,36 +25,7 @@ export class PlayerService {
         player_id: process.env.FACEIT_ID,
       }
     })
-    while (queue.size) {
-      let matches_of_player: MatchHistory;
-      try {
-        matches_of_player = await this.getCSGOMatches(
-          queue.value(),
-          0,
-          10,
-        );
-      } catch(err) {
-        queue.dequeue(queue.value());
-        continue;
-      }
-      for (const match of matches_of_player.items) {
-        for (const player of match.playing_players) {
-          try{
-            await this.prismaService.faceitID.create({
-              data: {
-                player_id: player,
-              }
-            })
-          }
-          catch(er) {
-            continue;
-          }
-          queue.enqueue(player);
-        }
-      }
-      queue.dequeue(queue.value());
-    }
-    return "Craw data completed!";
+    return this.progress(queue);
   }
 
   async getPlayerID2() {
@@ -63,36 +36,7 @@ export class PlayerService {
       }
     });
     queue.enqueue(data.player_id);
-    while (queue.size) {
-      let matches_of_player: MatchHistory;
-      try {
-        matches_of_player = await this.getCSGOMatches(
-          queue.value(),
-          0,
-          10,
-        );
-      } catch(err) {
-        queue.dequeue(queue.value());
-        continue;
-      }
-      for (const match of matches_of_player.items) {
-        for (const player of match.playing_players) {
-          try{
-            await this.prismaService.faceitID.create({
-              data: {
-                player_id: player,
-              }
-            })
-          }
-          catch(er) {
-            continue;
-          }
-          queue.enqueue(player);
-        }
-      }
-      queue.dequeue(queue.value());
-    }
-    return "Craw data completed!";
+    return this.progress(queue);
   }
 
   async getCSGOMatches(
@@ -139,22 +83,56 @@ export class PlayerService {
     return matches;
   }
 
+  async progress(queue: Queue<string>) {
+    while (queue.size) {
+      let matches_of_player: MatchHistory;
+      try {
+        matches_of_player = await this.getCSGOMatches(
+          queue.value(),
+          0,
+          10,
+        );
+      } catch(err) {
+        queue.dequeue(queue.value());
+        continue;
+      }
+      for (const match of matches_of_player.items) {
+        for (const player of match.playing_players) {
+          try{
+            this.total++;
+            await this.prismaService.faceitID.create({
+              data: {
+                player_id: player,
+              }
+            })
+          }
+          catch(er) {
+            this.duplicate++;
+            continue;
+          }
+          queue.enqueue(player);
+        }
+      }
+      queue.dequeue(queue.value());
+    }
+    return "Craw data completed!";
+  }
+
   async start() {
-    const data = await this.prismaService.faceitID.findMany({});
+    const data = await this.prismaService.faceitID.findMany({
+      skip: 0,
+      take: 2,
+      orderBy: {
+        uid: 'desc'
+      }
+    });
     if (data.length)
       await this.getPlayerID2();
     else
       await this.getPlayerID();
   }
 
-  async testFile() {
-    const data = await this.prismaService.faceitID.findFirst({
-      orderBy: {
-        uid: 'desc'
-      }
-    });
-    let res = data.player_id;
-    return res;
+  async ratioDuplicate() {
+    return "duplicate = " + this.duplicate + " total = " + this.total + " duplicate/total = " + (this.duplicate/this.total);
   }
-
 }

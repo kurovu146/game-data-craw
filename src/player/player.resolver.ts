@@ -22,7 +22,7 @@ export class PlayerResolver {
   }
 
   @Query(() => String, { nullable: true })
-  async testFile(): Promise<String> {
-    return await this.PlayerService.testFile();
+  async ratioDuplicate(): Promise<String> {
+    return await this.PlayerService.ratioDuplicate();
   }
 }

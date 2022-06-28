@@ -1,9 +1,7 @@
-import * as fs from 'fs';
 import { IQueue } from "./queue.interface";
 
 export class Queue<T> implements IQueue<T> {
     private storage = new Map<T, T>();
-    private storagecopy = new Map<T, T>();
 
     constructor(private capacity: number = Infinity) { }
 
@@ -12,7 +10,6 @@ export class Queue<T> implements IQueue<T> {
             throw Error("Queue has reached max capacity, you cannot add more items");
         }
         this.storage.set(item, item);
-        this.storagecopy.set(item, item);
     }
     dequeue(item: T): boolean {
         return this.storage.delete(item);
