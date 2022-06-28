@@ -19,10 +19,12 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         ],
         errorFormat: 'colorless',
       });
-      this.enableQueryLogger();
+      if (!(process.env.DEBUG === ""))
+        this.enableQueryLogger();
     } else {
       super();
     }
+
   }
 
   async onModuleInit() {
