@@ -42,9 +42,7 @@ $ yarn start
 $ yarn dev
 
 # get ratioDuplicate
-$ curl --location --request POST 'http://localhost:14621/graphql' \ #your url here
---header 'Content-Type: application/json' \
---data-raw '{"query":"{\r\n    ratioDuplicate\r\n}","variables":{}}'
+$ ./ratio.sh
 ```
 
 ## Support
